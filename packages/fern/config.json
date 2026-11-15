@@ -1,0 +1,174 @@
+{
+  "tokens": {
+    "surface": { "light": "#f9faefeb", "dark": "#12140eeb" },
+    "surfaceRaised": { "light": "#e8eadc", "dark": "#23261e" },
+    "text": { "light": "#1a1c16", "dark": "#e2e3d8" },
+    "textMuted": { "light": "#44483d", "dark": "#c4c8ba" },
+    "accent": { "light": "#4c662b", "dark": "#b5d38a" },
+    "track": { "light": "#c5c8ba", "dark": "#44483d" },
+    "hairline": { "light": "#1a1c1614", "dark": "#e2e3d814" },
+    "warning": { "light": "#7a5000", "dark": "#e8c27b" },
+    "critical": { "light": "#ba1a1a", "dark": "#ffb4ab" },
+
+    "hover": { "light": "#dfe2d2", "dark": "#2f3329" },
+    "popup": { "light": "#f3f4e9", "dark": "#1a1c16" },
+    "outline": { "light": "#75796c", "dark": "#8e9285" },
+    "accentText": { "light": "#ffffff", "dark": "#1f3701" },
+    "accentContainer": { "light": "#cdeda3", "dark": "#354e16" },
+    "onAccentContainer": { "light": "#354e16", "dark": "#cdeda3" },
+    "openContainer": { "light": "#dce7c8", "dark": "#3e4a33" },
+    "onOpenContainer": { "light": "#3f4a34", "dark": "#dbe7c8" },
+    "criticalContainer": { "light": "#ffdad6", "dark": "#93000a" },
+    "onCriticalContainer": { "light": "#93000a", "dark": "#ffdad6" },
+    "focusedApp": { "light": "#ffffff33", "dark": "#1f370129" }
+  },
+  "bar": {
+    "height": 52,
+    "margin": 6,
+    "inset": 6,
+    "spacing": 6,
+    "style": {
+      "background": "@token.surface",
+      "borderColor": "@token.hairline",
+      "borderWidth": 1,
+      "borderEdges": "all",
+      "cornerRadius": 14,
+      "states": {
+        "mode": { "borderColor": "@token.warning", "borderWidth": 1.5 }
+      }
+    }
+  },
+  "groups": {
+    "workspaces": {
+      "style": { "background": "@token.surfaceRaised", "cornerRadius": 14, "paddingHorizontal": 2, "paddingVertical": 0, "spacing": 2 }
+    },
+    "clock": {
+      "style": { "background": "@token.accentContainer", "cornerRadius": 14, "paddingHorizontal": 0, "paddingVertical": 0, "spacing": 0 }
+    },
+    "media": {
+      "style": { "background": "@token.surfaceRaised", "cornerRadius": 14, "paddingHorizontal": 0, "paddingVertical": 0, "spacing": 0 }
+    },
+    "system": {
+      "style": { "background": "@token.surfaceRaised", "cornerRadius": 14, "paddingHorizontal": 0, "paddingVertical": 0, "spacing": 0 }
+    },
+    "disk": {
+      "style": { "background": "@token.surfaceRaised", "cornerRadius": 14, "paddingHorizontal": 0, "paddingVertical": 0, "spacing": 0 }
+    },
+    "status": {
+      "style": { "background": "@token.surfaceRaised", "cornerRadius": 14, "paddingHorizontal": 0, "paddingVertical": 0, "spacing": 0 }
+    }
+  },
+  "defaults": {
+    "foreground": "@token.text",
+    "background": null,
+    "hoverBackground": "@token.hover",
+    "borderColor": null,
+    "borderWidth": 0,
+    "shadowColor": null,
+    "accent": "@token.accent",
+    "accentText": "@token.accentText",
+    "cornerRadius": 14,
+    "fontName": "Rubik",
+    "fontSize": 13,
+    "fontWeight": "regular",
+    "iconSize": 15,
+    "paddingHorizontal": 10,
+    "paddingVertical": 6,
+    "height": 28,
+    "spacing": 6,
+    "states": {
+      "open": {
+        "background": "@token.openContainer",
+        "foreground": "@token.onOpenContainer"
+      },
+      "warning": {
+        "foreground": "@token.warning",
+        "accent": "@token.warning"
+      },
+      "critical": {
+        "background": "@token.criticalContainer",
+        "foreground": "@token.onCriticalContainer",
+        "accent": "@token.onCriticalContainer",
+        "states": { "hover": { "background": "@token.criticalContainer" } }
+      },
+      "active": {
+        "foreground": "@token.accent"
+      },
+      "muted": {
+        "opacity": 0.5
+      }
+    }
+  },
+  "popupDefaults": {
+    "foreground": "@token.text",
+    "background": "@token.popup",
+    "borderColor": "@token.hairline",
+    "borderWidth": 1,
+    "cornerRadius": 20,
+    "shadowColor": { "light": "#303c1e33", "dark": "#00000080" },
+    "shadowRadius": 24,
+    "accent": "@token.accent",
+    "accentText": "@token.accentText",
+    "fontName": "Rubik",
+    "fontSize": 13,
+    "paddingHorizontal": 16,
+    "paddingVertical": 16,
+    "spacing": 14,
+    "states": {
+      "hover": { "background": "@token.hover" }
+    }
+  },
+  "roles": {
+    "time": {
+      "background": "@token.accentContainer",
+      "foreground": "@token.onAccentContainer",
+      "fontWeight": "semibold",
+      "cornerRadius": 14,
+      "paddingHorizontal": 12,
+      "states": {
+        "hover": { "background": "@token.accentContainer" },
+        "open": { "background": "@token.accent", "foreground": "@token.accentText" }
+      }
+    },
+    "primary": { "foreground": "@token.text", "fontWeight": "medium" },
+    "secondary": { "foreground": "@token.textMuted" },
+    "heading": { "foreground": "@token.text", "fontSize": 15, "fontWeight": "medium" },
+    "key": { "foreground": "@token.textMuted", "fontSize": 11 },
+    "value": { "foreground": "@token.text" },
+    "button": {
+      "background": "@token.openContainer",
+      "foreground": "@token.onOpenContainer",
+      "fontWeight": "medium",
+      "cornerRadius": 18,
+      "paddingHorizontal": 16,
+      "paddingVertical": 9,
+      "height": 36
+    },
+    "meter": { "accent": "@token.accent", "background": "@token.track", "cornerRadius": 4 },
+    "separator": { "foreground": "#00000000", "background": "@token.hairline", "height": 1 }
+  },
+  "workspaceDefaults": {
+    "indicator": "background",
+    "style": {
+      "foreground": "@token.textMuted",
+      "fontSize": 12,
+      "fontWeight": "medium",
+      "cornerRadius": 12,
+      "paddingHorizontal": 9,
+      "height": 12,
+      "spacing": 6,
+      "states": {
+        "focused": { "background": "@token.accent", "foreground": "@token.accentText" },
+        "visible": { "borderColor": "@token.outline", "borderWidth": 1.5, "foreground": "@token.text" },
+        "empty": { "foreground": "@token.outline" }
+      }
+    },
+    "appStyle": { "width": 14, "height": 14 },
+    "focusedWindowStyle": {
+      "background": "@token.focusedApp",
+      "cornerRadius": 10,
+      "paddingHorizontal": 4,
+      "paddingVertical": 3
+    }
+  }
+}
