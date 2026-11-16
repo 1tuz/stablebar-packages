@@ -20,6 +20,13 @@ these groups as pills on the raised surface: `workspaces`, `media`, `system`, `d
 { "id": "battery", "type": "battery", "position": "right", "group": "status" }
 ```
 
+The `disk` pill fits StableBar's built-in Disk widget, available from StableBar 0.16. It turns
+amber as the disk nears full and red when it's almost full:
+
+```json
+{ "id": "disk", "type": "disk", "position": "right", "details": true, "group": "disk" }
+```
+
 Other themes don't define these groups, and a widget in an unknown group stops the configuration
 from loading. To keep switching themes, declare each group you use in your configuration with an
 empty style, such as `"groups": { "status": { "style": {} } }`; Fern's style still applies.
