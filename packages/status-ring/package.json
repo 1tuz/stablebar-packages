@@ -1,0 +1,155 @@
+{
+  "id": "status-ring",
+  "name": "Status ring",
+  "version": "1.0.0",
+  "kind": "widgets",
+  "description": "Shows the battery, network and volume in one ring open at the bottom, after the design of DuoBar (github.com/Mikeli7666/DuoBar). Its popup has cards for Wi-Fi and network speed, the volume and output device, the battery with your Bluetooth devices' charge, and a System card with CPU, memory and the apps using the most.",
+  "author": "Seb-GRAF",
+  "repository": "https://github.com/Seb-GRAF/stablebar-packages",
+  "entry": "config.json",
+  "screenshot": "preview.png",
+  "minimumVersion": "0.17.0-beta.20261116153113.1185",
+  "permissions": ["location"],
+  "settings": {
+    "color": {
+      "type": "string",
+      "title": "Ring color",
+      "description": "The ring and the volume dots: a color such as #RRGGBB, or a theme color such as @token.accent.",
+      "default": "@token.text"
+    },
+    "chargingLight": {
+      "type": "string",
+      "title": "Charging color, light mode",
+      "description": "The ring while charging, and the ring in the Battery view.",
+      "default": "#28a745"
+    },
+    "chargingDark": {
+      "type": "string",
+      "title": "Charging color, dark mode",
+      "default": "#30d158"
+    },
+    "lowColor": {
+      "type": "string",
+      "title": "Low battery color",
+      "default": "@token.warning"
+    },
+    "criticalColor": {
+      "type": "string",
+      "title": "Critical battery color",
+      "default": "@token.critical"
+    },
+    "lowBelow": {
+      "type": "number",
+      "title": "Low battery at",
+      "description": "The charge, from 0 to 1, at or below which the ring takes the low color. 0.2 is 20 %.",
+      "default": 0.2
+    },
+    "criticalBelow": {
+      "type": "number",
+      "title": "Critical battery at",
+      "description": "The charge, from 0 to 1, at or below which the ring takes the critical color.",
+      "default": 0.1
+    },
+    "glyphSize": {
+      "type": "number",
+      "title": "Ring size",
+      "description": "The ring's diameter in points. Change the connection symbol's size with it.",
+      "default": 16
+    },
+    "symbolSize": {
+      "type": "number",
+      "title": "Connection symbol size",
+      "default": 7
+    },
+    "ringGap": {
+      "type": "number",
+      "title": "Ring opening",
+      "description": "Degrees left open at the bottom of the ring. 0 closes it.",
+      "default": 100
+    },
+    "ringStroke": {
+      "type": "number",
+      "title": "Ring thickness",
+      "default": 1.6
+    },
+    "volumeDots": {
+      "type": "number",
+      "title": "Volume dots",
+      "description": "How many dots show the volume, a whole number from 1. Three to five fit the ring.",
+      "default": 4
+    },
+    "flashAnimation": {
+      "type": "string",
+      "title": "Volume change animation",
+      "description": "How the volume beside the ring changes while you adjust it.",
+      "choices": ["numeric", "roll", "fade", "none"],
+      "default": "numeric"
+    },
+    "title": {
+      "type": "string",
+      "title": "Popup title",
+      "default": "Status"
+    },
+    "popupWidth": {
+      "type": "number",
+      "title": "Popup width",
+      "default": 360
+    },
+    "openOnHover": {
+      "type": "bool",
+      "title": "Open the popup on hover",
+      "default": false
+    },
+    "signalBars": {
+      "type": "number",
+      "title": "Wi-Fi signal bars",
+      "description": "How many bars show the Wi-Fi signal, a whole number from 1.",
+      "default": 4
+    },
+    "networkUnits": {
+      "type": "string",
+      "title": "Network speed in",
+      "choices": ["bytes", "bits"],
+      "default": "bytes"
+    },
+    "networkInterval": {
+      "type": "number",
+      "title": "Update network speed every (seconds)",
+      "default": 5
+    },
+    "systemInterval": {
+      "type": "number",
+      "title": "Check CPU and memory every (seconds)",
+      "default": 5
+    },
+    "cpuWarning": {
+      "type": "number",
+      "title": "Under load at CPU use",
+      "description": "The CPU use, from 0 to 1, that puts the load dot on the ring and a warning on the System card. Above 1 turns it off; memory pressure and heat still count.",
+      "default": 0.9
+    },
+    "memoryWarning": {
+      "type": "number",
+      "title": "Under load at memory use",
+      "description": "The memory use, from 0 to 1, that puts the load dot on the ring and a warning on the System card. Above 1 turns it off.",
+      "default": 0.9
+    },
+    "processes": {
+      "type": "number",
+      "title": "Apps to list",
+      "description": "How many apps the System view lists. Each app's helper processes count toward it.",
+      "default": 5
+    },
+    "sortBy": {
+      "type": "string",
+      "title": "List the apps using the most",
+      "choices": ["memory", "cpu"],
+      "default": "memory"
+    },
+    "devicesInterval": {
+      "type": "number",
+      "title": "Check device batteries every (seconds)",
+      "default": 60
+    }
+  }
+}

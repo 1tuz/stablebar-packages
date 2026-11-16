@@ -1,0 +1,1019 @@
+{
+  "tokens": {
+    "text": { "light": "#1d1d1f", "dark": "#f5f5f7" },
+    "textMuted": { "light": "#6e6e73", "dark": "#a1a1a6" },
+    "surfaceRaised": { "light": "#ffffff", "dark": "#36383c" },
+    "accent": { "light": "#007aff", "dark": "#0a84ff" },
+    "track": { "light": "#1d1d1f26", "dark": "#f5f5f726" },
+    "hairline": { "light": "#1d1d1f1f", "dark": "#ffffff1f" },
+    "warning": { "light": "#c93400", "dark": "#ffb340" },
+    "critical": { "light": "#d70015", "dark": "#ff6961" }
+  },
+  "providers": {
+    "ringBattery": { "type": "battery" },
+    "ringNetwork": { "type": "network", "interval": "@setting.networkInterval", "units": "@setting.networkUnits" },
+    "ringWifi": { "type": "wifi" },
+    "ringAudio": { "type": "audio" },
+    "ringSystem": {
+      "type": "system",
+      "interval": "@setting.systemInterval",
+      "processes": "@setting.processes",
+      "sortBy": "@setting.sortBy",
+      "cpuWarning": "@setting.cpuWarning",
+      "memoryWarning": "@setting.memoryWarning"
+    },
+    "ringMic": { "type": "microphone" },
+    "ringDevices": { "type": "bluetooth", "interval": "@setting.devicesInterval" },
+    "statusRing": {
+      "type": "merge",
+      "providers": ["ringBattery", "ringNetwork", "ringWifi", "ringAudio", "ringSystem", "ringMic", "ringDevices"]
+    }
+  },
+  "widgets": [
+    {
+      "id": "status-ring",
+      "type": "provider",
+      "provider": "statusRing",
+      "position": "right",
+      "rules": [
+        { "when": { "value": "ringBattery.percent", "below": "@setting.criticalBelow" }, "state": "critical" },
+        { "when": { "value": "ringBattery.percent", "below": "@setting.lowBelow" }, "state": "warning" },
+        { "when": { "field": "ringAudio.muted", "equals": "true" }, "state": "silent" },
+        { "when": { "field": "ringBattery.state", "equals": "charging" }, "state": "active" }
+      ],
+      "layout": {
+        "type": "row",
+        "style": { "spacing": 5 },
+        "children": [
+          {
+            "type": "ring",
+            "source": "ringBattery.percent",
+            "gap": "@setting.ringGap",
+            "lineWidth": "@setting.ringStroke",
+            "style": {
+              "iconSize": "@setting.glyphSize",
+              "accent": "@setting.color",
+              "background": "@token.track",
+              "states": {
+                "active": { "accent": { "light": "@setting.chargingLight", "dark": "@setting.chargingDark" } },
+                "warning": { "accent": "@setting.lowColor" },
+                "critical": { "accent": "@setting.criticalColor" }
+              }
+            },
+            "children": [
+              {
+                "type": "column",
+                "style": { "spacing": 1.5 },
+                "children": [
+                  {
+                    "type": "symbol",
+                    "source": "ringNetwork.connectionIcon",
+                    "style": { "iconSize": "@setting.symbolSize", "fontWeight": "bold" }
+                  },
+                  {
+                    "type": "progress",
+                    "source": "ringAudio.volume",
+                    "hideWhenEmpty": "ringAudio.volume",
+                    "height": 1.6,
+                    "segments": "@setting.volumeDots",
+                    "style": {
+                      "width": 9,
+                      "spacing": 1,
+                      "cornerRadius": 1,
+                      "accent": "@setting.color",
+                      "background": "@token.track",
+                      "states": {
+                        "active": { "accent": "@setting.color" },
+                        "warning": { "accent": "@setting.color" },
+                        "critical": { "accent": "@setting.color" },
+                        "silent": { "opacity": 0.3 }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "symbol",
+                "name": "circle.fill",
+                "hideWhenEmpty": "ringSystem.strainIcon",
+                "style": { "iconSize": 4, "foreground": "@token.warning", "offsetX": 7, "offsetY": -6.5 }
+              }
+            ]
+          },
+          {
+            "type": "field",
+            "field": "ringAudio.changedVolume",
+            "hideWhenEmpty": "ringAudio.changedVolume",
+            "transition": "@setting.flashAnimation",
+            "style": { "fontSize": 11 }
+          }
+        ]
+      },
+      "popup": {
+        "openOnHover": "@setting.openOnHover",
+        "style": { "width": "@setting.popupWidth", "spacing": 10 },
+        "layout": {
+          "type": "column",
+          "children": [
+            {
+              "type": "row",
+              "children": [
+                { "type": "text", "text": "@setting.title", "style": { "fontWeight": "bold", "fontSize": 17 } },
+                {
+                  "type": "ring",
+                  "source": "ringBattery.percent",
+                  "gap": "@setting.ringGap",
+                  "lineWidth": 2.6,
+                  "alignment": "trailing",
+                  "style": { "iconSize": 28, "accent": "@setting.color", "background": "@token.track" },
+                  "children": [
+                    {
+                      "type": "column",
+                      "style": { "spacing": 2 },
+                      "children": [
+                        { "type": "symbol", "source": "ringNetwork.connectionIcon", "style": { "iconSize": 12, "fontWeight": "bold" } },
+                        {
+                          "type": "progress",
+                          "source": "ringAudio.volume",
+                          "hideWhenEmpty": "ringAudio.volume",
+                          "height": 2.8,
+                          "segments": "@setting.volumeDots",
+                          "style": { "width": 15, "spacing": 1.4, "cornerRadius": 1.4, "background": "@token.track" }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "row",
+              "view": "network",
+              "style": {
+                "background": "@token.surfaceRaised",
+                "cornerRadius": 14,
+                "paddingHorizontal": 12,
+                "paddingVertical": 10,
+                "spacing": 12,
+                "states": { "hover": { "background": { "light": "#e8e8ed", "dark": "#46484e" } } }
+              },
+              "children": [
+                {
+                  "type": "symbol",
+                  "source": "ringNetwork.connectionIcon",
+                  "alignment": "center",
+                  "style": { "iconSize": 16, "width": 34, "height": 34, "cornerRadius": 9, "background": "@token.hairline" }
+                },
+                {
+                  "type": "column",
+                  "style": { "spacing": 2 },
+                  "children": [
+                    { "type": "text", "text": "Network", "style": { "fontWeight": "semibold", "fontSize": 14 } },
+                    {
+                      "type": "field",
+                      "field": "ringWifi.ssid",
+                      "hideWhenEmpty": "ringWifi.ssid",
+                      "style": { "foreground": "@token.textMuted", "fontSize": 12 }
+                    }
+                  ]
+                },
+                {
+                  "type": "progress",
+                  "source": "ringWifi.signal",
+                  "height": 4,
+                  "segments": "@setting.signalBars",
+                  "alignment": "trailing",
+                  "style": { "width": 26, "spacing": 2, "cornerRadius": 1, "accent": "@token.text", "background": "@token.track" }
+                },
+                {
+                  "type": "symbol",
+                  "name": "chevron.right",
+                  "alignment": "center",
+                  "style": { "iconSize": 11, "foreground": "@token.textMuted", "width": 18 }
+                }
+              ]
+            },
+            {
+              "type": "column",
+              "style": {
+                "background": "@token.surfaceRaised",
+                "cornerRadius": 14,
+                "paddingHorizontal": 6,
+                "paddingVertical": 6,
+                "spacing": 10
+              },
+              "children": [
+                {
+                  "type": "row",
+                  "view": "sound",
+                  "style": {
+                    "spacing": 12,
+                    "cornerRadius": 10,
+                    "paddingHorizontal": 6,
+                    "paddingVertical": 4,
+                    "states": { "hover": { "background": "@token.hairline" } }
+                  },
+                  "children": [
+                    {
+                      "type": "symbol",
+                      "source": "ringAudio.icon",
+                      "alignment": "center",
+                      "style": { "iconSize": 16, "width": 34, "height": 34, "cornerRadius": 9, "background": "@token.hairline" }
+                    },
+                    {
+                      "type": "column",
+                      "style": { "spacing": 2 },
+                      "children": [
+                        { "type": "text", "text": "Volume", "style": { "fontWeight": "semibold", "fontSize": 14 } },
+                        {
+                          "type": "field",
+                          "field": "ringAudio.device",
+                          "hideWhenEmpty": "ringAudio.device",
+                          "style": { "foreground": "@token.textMuted", "fontSize": 12 }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "row",
+                      "hideWhenEmpty": "ringAudio.volume",
+                      "style": { "spacing": 0, "width": 46 },
+                      "children": [
+                        { "type": "field", "field": "ringAudio.volume", "alignment": "trailing", "style": { "foreground": "@token.textMuted" } },
+                        { "type": "text", "text": "%", "style": { "foreground": "@token.textMuted", "width": 12 } }
+                      ]
+                    },
+                    {
+                      "type": "symbol",
+                      "name": "chevron.right",
+                      "alignment": "center",
+                      "style": { "iconSize": 11, "foreground": "@token.textMuted", "width": 18 }
+                    }
+                  ]
+                },
+                {
+                  "type": "column",
+                  "hideWhenEmpty": "ringAudio.volume",
+                  "style": { "paddingHorizontal": 6, "paddingVertical": 2 },
+                  "children": [
+                    {
+                      "type": "slider",
+                      "title": "Volume",
+                      "source": "ringAudio.volume",
+                      "filled": true,
+                      "set": "volume",
+                      "icon": "speaker.wave.2.fill",
+                      "style": { "height": 28, "cornerRadius": 14, "iconSize": 12, "background": "@token.track" }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "row",
+              "view": "battery",
+              "style": {
+                "background": "@token.surfaceRaised",
+                "cornerRadius": 14,
+                "paddingHorizontal": 12,
+                "paddingVertical": 10,
+                "spacing": 12,
+                "states": { "hover": { "background": { "light": "#e8e8ed", "dark": "#46484e" } } }
+              },
+              "children": [
+                {
+                  "type": "symbol",
+                  "source": "ringBattery.icon",
+                  "alignment": "center",
+                  "style": { "iconSize": 16, "width": 34, "height": 34, "cornerRadius": 9, "background": "@token.hairline" }
+                },
+                {
+                  "type": "column",
+                  "style": { "spacing": 2 },
+                  "children": [
+                    { "type": "text", "text": "Battery", "style": { "fontWeight": "semibold", "fontSize": 14 } },
+                    { "type": "field", "field": "ringBattery.tooltip", "style": { "foreground": "@token.textMuted", "fontSize": 12 } },
+                    {
+                      "type": "field",
+                      "field": "ringDevices.summary",
+                      "hideWhenEmpty": "ringDevices.summary",
+                      "style": { "foreground": "@token.textMuted", "fontSize": 12 }
+                    }
+                  ]
+                },
+                {
+                  "type": "symbol",
+                  "name": "chevron.right",
+                  "alignment": "center",
+                  "style": { "iconSize": 11, "foreground": "@token.textMuted", "width": 18 }
+                }
+              ]
+            },
+            {
+              "type": "row",
+              "view": "system",
+              "style": {
+                "background": "@token.surfaceRaised",
+                "cornerRadius": 14,
+                "paddingHorizontal": 12,
+                "paddingVertical": 10,
+                "spacing": 12,
+                "states": { "hover": { "background": { "light": "#e8e8ed", "dark": "#46484e" } } }
+              },
+              "children": [
+                {
+                  "type": "symbol",
+                  "name": "cpu",
+                  "alignment": "center",
+                  "style": { "iconSize": 16, "width": 34, "height": 34, "cornerRadius": 9, "background": "@token.hairline" }
+                },
+                {
+                  "type": "column",
+                  "style": { "spacing": 2 },
+                  "children": [
+                    { "type": "text", "text": "System", "style": { "fontWeight": "semibold", "fontSize": 14 } },
+                    {
+                      "type": "row",
+                      "style": { "spacing": 4, "foreground": "@token.textMuted", "fontSize": 12 },
+                      "children": [
+                        { "type": "text", "text": "CPU", "style": { "width": 24 } },
+                        {
+                          "type": "row",
+                          "style": { "spacing": 0, "width": 36 },
+                          "children": [
+                            { "type": "field", "field": "ringSystem.cpu", "alignment": "trailing" },
+                            { "type": "text", "text": "%", "style": { "width": 12 } }
+                          ]
+                        },
+                        { "type": "text", "text": "Memory", "style": { "width": 46 } },
+                        {
+                          "type": "row",
+                          "style": { "spacing": 0, "width": 36 },
+                          "children": [
+                            { "type": "field", "field": "ringSystem.memory", "alignment": "trailing" },
+                            { "type": "text", "text": "%", "style": { "width": 12 } }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "symbol",
+                  "source": "ringSystem.strainIcon",
+                  "hideWhenEmpty": "ringSystem.strainIcon",
+                  "alignment": "center",
+                  "style": { "iconSize": 13, "foreground": "@token.warning", "width": 18 }
+                },
+                {
+                  "type": "symbol",
+                  "name": "chevron.right",
+                  "alignment": "center",
+                  "style": { "iconSize": 11, "foreground": "@token.textMuted", "width": 18 }
+                }
+              ]
+            }
+          ]
+        },
+        "views": {
+          "system": {
+            "type": "column",
+            "style": { "spacing": 12 },
+            "children": [
+              { "type": "text", "text": "System", "style": { "fontWeight": "bold", "fontSize": 17 } },
+              {
+                "type": "row",
+                "style": {
+                  "background": "@token.surfaceRaised",
+                  "cornerRadius": 14,
+                  "paddingHorizontal": 12,
+                  "paddingVertical": 10,
+                  "spacing": 12
+                },
+                "children": [
+                  {
+                    "type": "column",
+                    "style": { "spacing": 6 },
+                    "children": [
+                      {
+                        "type": "row",
+                        "style": { "fontWeight": "semibold", "spacing": 0 },
+                        "children": [
+                          { "type": "text", "text": "CPU" },
+                          { "type": "field", "field": "ringSystem.cpu", "alignment": "trailing" },
+                          { "type": "text", "text": "%", "style": { "width": 12 } }
+                        ]
+                      },
+                      { "type": "graph", "source": "ringSystem.cpu", "height": 28 },
+                      {
+                        "type": "column",
+                        "style": { "fontSize": 11.5, "spacing": 3 },
+                        "children": [
+                          {
+                            "type": "row",
+                            "style": { "spacing": 0 },
+                            "children": [
+                              { "type": "text", "text": "User", "style": { "foreground": "@token.textMuted" } },
+                              { "type": "field", "field": "ringSystem.cpuUser", "alignment": "trailing" },
+                              { "type": "text", "text": "%", "style": { "width": 12 } }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "style": { "spacing": 0 },
+                            "children": [
+                              { "type": "text", "text": "System", "style": { "foreground": "@token.textMuted" } },
+                              { "type": "field", "field": "ringSystem.cpuSystem", "alignment": "trailing" },
+                              { "type": "text", "text": "%", "style": { "width": 12 } }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "style": { "spacing": 4 },
+                            "children": [
+                              { "type": "text", "text": "Load", "style": { "foreground": "@token.textMuted", "width": 32 } },
+                              { "type": "field", "field": "ringSystem.load", "alignment": "trailing" }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "children": [
+                              { "type": "text", "text": "Thermal", "style": { "foreground": "@token.textMuted" } },
+                              { "type": "field", "field": "ringSystem.thermal", "alignment": "trailing" }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "column",
+                    "style": { "spacing": 6, "width": 128 },
+                    "children": [
+                      {
+                        "type": "row",
+                        "style": { "fontWeight": "semibold", "spacing": 0 },
+                        "children": [
+                          { "type": "text", "text": "Memory" },
+                          { "type": "field", "field": "ringSystem.memory", "alignment": "trailing" },
+                          { "type": "text", "text": "%", "style": { "width": 12 } }
+                        ]
+                      },
+                      {
+                        "type": "column",
+                        "style": { "height": 28 },
+                        "children": [
+                          { "type": "progress", "source": "ringSystem.memory", "height": 4, "style": { "background": "@token.track" } }
+                        ]
+                      },
+                      {
+                        "type": "column",
+                        "style": { "fontSize": 11.5, "spacing": 3 },
+                        "children": [
+                          {
+                            "type": "row",
+                            "children": [
+                              { "type": "text", "text": "Used", "style": { "foreground": "@token.textMuted" } },
+                              { "type": "field", "field": "ringSystem.memoryUsed", "alignment": "trailing" }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "style": { "spacing": 4 },
+                            "children": [
+                              { "type": "text", "text": "Compressed", "style": { "foreground": "@token.textMuted", "width": 72 } },
+                              { "type": "field", "field": "ringSystem.memoryCompressed", "alignment": "trailing" }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "children": [
+                              { "type": "text", "text": "Swap", "style": { "foreground": "@token.textMuted" } },
+                              { "type": "field", "field": "ringSystem.swap", "alignment": "trailing" }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "children": [
+                              { "type": "text", "text": "Pressure", "style": { "foreground": "@token.textMuted" } },
+                              { "type": "field", "field": "ringSystem.pressure", "alignment": "trailing" }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "column",
+                "style": {
+                  "background": "@token.surfaceRaised",
+                  "cornerRadius": 14,
+                  "paddingHorizontal": 8,
+                  "paddingVertical": 8,
+                  "spacing": 2
+                },
+                "children": [
+                  {
+                    "type": "row",
+                    "style": { "fontSize": 11.5, "foreground": "@token.textMuted", "spacing": 8, "paddingHorizontal": 4 },
+                    "children": [
+                      { "type": "text", "text": "Apps" },
+                      { "type": "text", "text": "Memory", "alignment": "trailing", "style": { "width": 64 } },
+                      { "type": "text", "text": "CPU", "alignment": "trailing", "style": { "width": 44 } },
+                      { "type": "text", "text": "", "style": { "width": 16 } }
+                    ]
+                  },
+                  {
+                    "type": "list",
+                    "source": "ringSystem.apps",
+                    "style": { "fontSize": 12 },
+                    "row": {
+                      "type": "row",
+                      "style": {
+                        "spacing": 8,
+                        "paddingHorizontal": 4,
+                        "paddingVertical": 3,
+                        "cornerRadius": 6,
+                        "states": { "hover": { "background": "@token.hairline" } }
+                      },
+                      "children": [
+                        { "type": "image", "source": "path", "style": { "width": 16, "height": 16 } },
+                        { "type": "field", "field": "name" },
+                        { "type": "field", "field": "memory", "alignment": "trailing", "style": { "width": 64 } },
+                        {
+                          "type": "row",
+                          "style": { "width": 44, "spacing": 0 },
+                          "children": [
+                            { "type": "field", "field": "cpu", "alignment": "trailing" },
+                            { "type": "text", "text": "%", "style": { "width": 12 } }
+                          ]
+                        },
+                        {
+                          "type": "symbol",
+                          "name": "xmark.circle.fill",
+                          "quitField": "pid",
+                          "style": {
+                            "width": 16,
+                            "iconSize": 12,
+                            "foreground": "@token.textMuted",
+                            "states": { "hover": { "foreground": "@token.critical" } }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "row",
+                "children": [
+                  {
+                    "type": "row",
+                    "style": { "spacing": 6, "foreground": "@token.textMuted", "fontSize": 12 },
+                    "children": [
+                      { "type": "text", "text": "Up", "style": { "width": 18 } },
+                      { "type": "field", "field": "ringSystem.uptime" }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": "Activity Monitor…",
+                    "open": "com.apple.ActivityMonitor",
+                    "alignment": "trailing",
+                    "style": {
+                      "foreground": "@token.accent",
+                      "cornerRadius": 6,
+                      "paddingHorizontal": 4,
+                      "paddingVertical": 2,
+                      "states": { "hover": { "background": "@token.hairline" } }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "network": {
+            "type": "column",
+            "style": { "spacing": 12 },
+            "children": [
+              { "type": "text", "text": "Wi-Fi", "style": { "fontWeight": "bold", "fontSize": 17 } },
+              {
+                "type": "column",
+                "style": {
+                  "background": "@token.surfaceRaised",
+                  "cornerRadius": 14,
+                  "paddingHorizontal": 12,
+                  "paddingVertical": 8,
+                  "spacing": 6
+                },
+                "children": [
+                  { "type": "toggle", "title": "Wi-Fi", "source": "ringWifi.power", "set": "wifiPower" },
+                  { "type": "divider" },
+                  {
+                    "type": "row",
+                    "style": { "spacing": 10, "paddingVertical": 3 },
+                    "children": [
+                      { "type": "text", "text": "Network", "style": { "foreground": "@token.textMuted", "width": 130 } },
+                      { "type": "field", "field": "ringWifi.ssid", "alignment": "trailing" }
+                    ]
+                  },
+                  { "type": "divider" },
+                  {
+                    "type": "row",
+                    "style": { "spacing": 10, "paddingVertical": 3 },
+                    "children": [
+                      { "type": "text", "text": "Signal", "style": { "foreground": "@token.textMuted", "width": 130 } },
+                      {
+                        "type": "row",
+                        "alignment": "trailing",
+                        "style": { "spacing": 6 },
+                        "children": [
+                          {
+                            "type": "progress",
+                            "source": "ringWifi.signal",
+                            "height": 4,
+                            "segments": "@setting.signalBars",
+                            "alignment": "trailing",
+                            "style": { "width": 26, "spacing": 2, "cornerRadius": 1, "accent": "@token.text", "background": "@token.track" }
+                          },
+                          {
+                            "type": "row",
+                            "style": { "spacing": 3, "width": 64 },
+                            "children": [
+                              { "type": "field", "field": "ringWifi.rssi", "alignment": "trailing", "style": { "foreground": "@token.textMuted" } },
+                              { "type": "text", "text": "dBm", "style": { "foreground": "@token.textMuted", "width": 28 } }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "column",
+                "style": {
+                  "background": "@token.surfaceRaised",
+                  "cornerRadius": 14,
+                  "paddingHorizontal": 12,
+                  "paddingVertical": 8,
+                  "spacing": 6
+                },
+                "children": [
+                  {
+                    "type": "row",
+                    "style": { "spacing": 10, "paddingVertical": 3 },
+                    "children": [
+                      { "type": "text", "text": "Download", "style": { "foreground": "@token.textMuted", "width": 130 } },
+                      { "type": "field", "field": "ringNetwork.downloadRate", "alignment": "trailing" }
+                    ]
+                  },
+                  { "type": "divider" },
+                  {
+                    "type": "row",
+                    "style": { "spacing": 10, "paddingVertical": 3 },
+                    "children": [
+                      { "type": "text", "text": "Upload", "style": { "foreground": "@token.textMuted", "width": 130 } },
+                      { "type": "field", "field": "ringNetwork.uploadRate", "alignment": "trailing" }
+                    ]
+                  },
+                  { "type": "divider" },
+                  {
+                    "type": "row",
+                    "style": { "spacing": 10, "paddingVertical": 3 },
+                    "children": [
+                      { "type": "text", "text": "Interface", "style": { "foreground": "@token.textMuted", "width": 130 } },
+                      { "type": "field", "field": "ringNetwork.interface", "alignment": "trailing" }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "row",
+                "children": [
+                  {
+                    "type": "text",
+                    "text": "Other Networks…",
+                    "openMenuBarItem": { "app": "com.apple.controlcenter", "item": "com.apple.menuextra.wifi" },
+                    "style": {
+                      "foreground": "@token.accent",
+                      "cornerRadius": 6,
+                      "paddingHorizontal": 4,
+                      "paddingVertical": 2,
+                      "states": { "hover": { "background": "@token.hairline" } }
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "text": "Network Settings…",
+                    "open": "x-apple.systempreferences:com.apple.Network-Settings.extension",
+                    "alignment": "trailing",
+                    "style": {
+                      "foreground": "@token.accent",
+                      "cornerRadius": 6,
+                      "paddingHorizontal": 4,
+                      "paddingVertical": 2,
+                      "states": { "hover": { "background": "@token.hairline" } }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "sound": {
+            "type": "column",
+            "style": { "spacing": 12 },
+            "children": [
+              { "type": "text", "text": "Sound", "style": { "fontWeight": "bold", "fontSize": 17 } },
+              {
+                "type": "slider",
+                "title": "Volume",
+                "source": "ringAudio.volume",
+                "hideWhenEmpty": "ringAudio.volume",
+                "filled": true,
+                "set": "volume",
+                "icon": "speaker.wave.2.fill",
+                "style": { "height": 32, "cornerRadius": 16, "iconSize": 14, "background": "@token.track" }
+              },
+              {
+                "type": "column",
+                "style": {
+                  "background": "@token.surfaceRaised",
+                  "cornerRadius": 14,
+                  "paddingHorizontal": 12,
+                  "paddingVertical": 8,
+                  "spacing": 6
+                },
+                "children": [
+                  { "type": "toggle", "title": "Mute", "source": "ringAudio.muted", "set": "muted", "hideWhenEmpty": "ringAudio.muted" },
+                  { "type": "divider", "hideWhenEmpty": "ringAudio.muted" },
+                  {
+                    "type": "row",
+                    "style": { "spacing": 10, "paddingVertical": 3 },
+                    "children": [
+                      { "type": "text", "text": "Input", "style": { "foreground": "@token.textMuted", "width": 130 } },
+                      { "type": "field", "field": "ringMic.device", "alignment": "trailing" }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "Output",
+                "style": { "foreground": "@token.textMuted", "fontSize": 12, "fontWeight": "semibold" }
+              },
+              {
+                "type": "list",
+                "source": "ringAudio.devices",
+                "style": {
+                  "background": "@token.surfaceRaised",
+                  "cornerRadius": 14,
+                  "paddingHorizontal": 12,
+                  "paddingVertical": 8,
+                  "spacing": 8
+                },
+                "row": {
+                  "type": "row",
+                  "selectOutputDeviceField": "id",
+                  "style": {
+                    "cornerRadius": 8,
+                    "paddingHorizontal": 6,
+                    "paddingVertical": 4,
+                    "states": { "hover": { "background": { "light": "#e8e8ed", "dark": "#46484e" } } }
+                  },
+                  "children": [
+                    { "type": "field", "field": "name" },
+                    {
+                      "type": "symbol",
+                      "name": "checkmark",
+                      "hideWhenEmpty": "selected",
+                      "fitWidth": true,
+                      "style": { "foreground": "@token.accent", "fontWeight": "bold" }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "text",
+                "text": "Sound Settings…",
+                "open": "x-apple.systempreferences:com.apple.Sound-Settings.extension",
+                "style": {
+                  "foreground": "@token.accent",
+                  "cornerRadius": 6,
+                  "paddingHorizontal": 4,
+                  "paddingVertical": 2,
+                  "states": { "hover": { "background": "@token.hairline" } }
+                }
+              }
+            ]
+          },
+          "battery": {
+            "type": "column",
+            "style": { "spacing": 12 },
+            "children": [
+              { "type": "text", "text": "Battery", "style": { "fontWeight": "bold", "fontSize": 17 } },
+              {
+                "type": "row",
+                "style": { "spacing": 14 },
+                "children": [
+                  {
+                    "type": "ring",
+                    "source": "ringBattery.percent",
+                    "lineWidth": 4,
+                    "style": {
+                      "iconSize": 56,
+                      "width": 56,
+                      "accent": { "light": "@setting.chargingLight", "dark": "@setting.chargingDark" },
+                      "background": "@token.track"
+                    },
+                    "children": [
+                      {
+                        "type": "row",
+                        "style": { "spacing": 0 },
+                        "children": [
+                          { "type": "field", "field": "ringBattery.percent", "style": { "fontSize": 15, "fontWeight": "bold" } },
+                          { "type": "text", "text": "%", "style": { "fontSize": 10, "fontWeight": "semibold" } }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "column",
+                    "style": { "spacing": 4 },
+                    "children": [
+                      { "type": "symbol", "source": "ringBattery.icon", "style": { "iconSize": 18 } },
+                      { "type": "field", "field": "ringBattery.tooltip", "style": { "foreground": "@token.textMuted" } }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "column",
+                "style": {
+                  "background": "@token.surfaceRaised",
+                  "cornerRadius": 14,
+                  "paddingHorizontal": 12,
+                  "paddingVertical": 8,
+                  "spacing": 6
+                },
+                "children": [
+                  {
+                    "type": "row",
+                    "style": { "spacing": 10, "paddingVertical": 3 },
+                    "children": [
+                      { "type": "text", "text": "State", "style": { "foreground": "@token.textMuted", "width": 130 } },
+                      { "type": "field", "field": "ringBattery.state", "alignment": "trailing" }
+                    ]
+                  },
+                  { "type": "divider" },
+                  {
+                    "type": "row",
+                    "style": { "spacing": 10, "paddingVertical": 3 },
+                    "children": [
+                      { "type": "text", "text": "Health", "style": { "foreground": "@token.textMuted", "width": 130 } },
+                      { "type": "field", "field": "ringBattery.health", "alignment": "trailing" }
+                    ]
+                  },
+                  { "type": "divider" },
+                  {
+                    "type": "row",
+                    "style": { "spacing": 0, "paddingVertical": 3 },
+                    "children": [
+                      { "type": "text", "text": "Capacity", "style": { "foreground": "@token.textMuted", "width": 130 } },
+                      { "type": "field", "field": "ringBattery.capacity", "alignment": "trailing" },
+                      { "type": "text", "text": "%", "alignment": "trailing", "style": { "width": 10 } }
+                    ]
+                  },
+                  { "type": "divider" },
+                  {
+                    "type": "row",
+                    "style": { "spacing": 10, "paddingVertical": 3 },
+                    "children": [
+                      { "type": "text", "text": "Cycle count", "style": { "foreground": "@token.textMuted", "width": 130 } },
+                      { "type": "field", "field": "ringBattery.cycles", "alignment": "trailing" }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "column",
+                "hideWhenEmpty": "ringDevices.text",
+                "style": { "spacing": 12 },
+                "children": [
+                  {
+                    "type": "row",
+                    "children": [
+                      {
+                        "type": "text",
+                        "text": "Devices",
+                        "style": { "foreground": "@token.textMuted", "fontSize": 12, "fontWeight": "semibold" }
+                      },
+                      {
+                        "type": "text",
+                        "text": "Lowest",
+                        "hideWhenEmpty": "ringDevices.summary",
+                        "alignment": "trailing",
+                        "style": { "foreground": "@token.textMuted", "fontSize": 12 }
+                      },
+                      {
+                        "type": "battery",
+                        "source": "ringDevices.lowestBattery",
+                        "hideWhenEmpty": "ringDevices.summary",
+                        "alignment": "center",
+                        "style": { "iconSize": 13, "width": 24, "foreground": "@token.textMuted" }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "list",
+                    "source": "ringDevices.devices",
+                    "style": {
+                      "background": "@token.surfaceRaised",
+                      "cornerRadius": 14,
+                      "paddingHorizontal": 12,
+                      "paddingVertical": 10,
+                      "spacing": 8
+                    },
+                    "row": {
+                      "type": "row",
+                      "style": { "spacing": 10 },
+                      "children": [
+                        { "type": "symbol", "source": "icon", "alignment": "center", "style": { "iconSize": 13, "width": 22 } },
+                        { "type": "field", "field": "name" },
+                        {
+                          "type": "field",
+                          "field": "battery",
+                          "alignment": "trailing",
+                          "style": { "foreground": "@token.textMuted", "width": 130 }
+                        },
+                        {
+                          "type": "battery",
+                          "source": "fraction",
+                          "hideWhenEmpty": "fraction",
+                          "alignment": "center",
+                          "style": { "iconSize": 13, "width": 24, "foreground": "@token.textMuted" }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "Battery Settings…",
+                "open": "x-apple.systempreferences:com.apple.Battery-Settings.extension",
+                "style": {
+                  "foreground": "@token.accent",
+                  "cornerRadius": 6,
+                  "paddingHorizontal": 4,
+                  "paddingVertical": 2,
+                  "states": { "hover": { "background": "@token.hairline" } }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "hoverLayout": {
+        "type": "column",
+        "style": { "spacing": 5 },
+        "children": [
+          {
+            "type": "row",
+            "style": { "spacing": 6 },
+            "children": [
+              { "type": "symbol", "source": "ringNetwork.connectionIcon", "style": { "iconSize": 11, "width": 16 } },
+              { "type": "field", "field": "ringWifi.ssid" }
+            ]
+          },
+          {
+            "type": "row",
+            "style": { "spacing": 6 },
+            "children": [
+              { "type": "symbol", "source": "ringBattery.icon", "style": { "iconSize": 11, "width": 16 } },
+              { "type": "field", "field": "ringBattery.tooltip" }
+            ]
+          },
+          {
+            "type": "row",
+            "style": { "spacing": 6 },
+            "children": [
+              { "type": "symbol", "source": "ringAudio.icon", "style": { "iconSize": 11, "width": 16 } },
+              { "type": "field", "field": "ringAudio.text" }
+            ]
+          },
+          {
+            "type": "row",
+            "hideWhenEmpty": "ringDevices.summary",
+            "style": { "spacing": 6 },
+            "children": [
+              { "type": "symbol", "name": "dot.radiowaves.left.and.right", "style": { "iconSize": 11, "width": 16 } },
+              { "type": "field", "field": "ringDevices.summary" }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
