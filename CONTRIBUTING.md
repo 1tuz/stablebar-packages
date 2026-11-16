@@ -56,6 +56,16 @@ The table in the [README](README.md#packages) comes from the manifests. After ad
 
 and commit `README.md`. CI fails when the table is out of date. The script needs [jq](https://jqlang.org).
 
+## Category and symbol
+
+[`listing.json`](listing.json) gives every widget package a category and an SF Symbol. StableBar's Store groups widgets by category and shows the symbol beside each one; themes have their own group and aren't listed. The categories are `apps` (Apps & windows), `system`, `time` (Time & calendar), `developer` (Developer & AI), `utilities` and `custom` (Build your own). Add your package to it in the same pull request:
+
+```json
+"weather": { "category": "utilities", "symbol": "cloud.sun" }
+```
+
+CI copies both into the package's entry in `index.json`; `scripts/check-listing.sh` checks the file.
+
 ## Suggestions in setup
 
 [`suggestions.json`](suggestions.json) lists the packages StableBar's setup suggests when it finds a tool or an app on the Mac. CI copies it into `index.json` as `suggestions`. Setup's side is tracked in [StableBar#405](https://github.com/Seb-GRAF/StableBar/issues/405).
@@ -95,9 +105,9 @@ Package ideas and bugs in a package go in [issues](https://github.com/Seb-GRAF/s
 
 On every pull request and push to `main`:
 
-- **Lint:** ShellCheck on every `.sh` file, the package list in the README, `scripts/check-suggestions.sh`, `scripts/test.sh`, which tests the scripts on scratch repositories and packages, and on pull requests `scripts/check-versions.sh`, which requires every package that changed to raise its version above every version it had, and `scripts/check-one-package.sh`, which allows one package per pull request.
+- **Lint:** ShellCheck on every `.sh` file, the package list in the README, `scripts/check-suggestions.sh`, `scripts/check-listing.sh`, `scripts/test.sh`, which tests the scripts on scratch repositories and packages, and on pull requests `scripts/check-versions.sh`, which requires every package that changed to raise its version above every version it had, and `scripts/check-one-package.sh`, which allows one package per pull request.
 - **Validate:** builds the current StableBar `main`, downloads its latest release, and runs `scripts/check-package.sh` on every package: the folder name matches the `id`, the file rules and the preview above, then `--inspect-package`, `--install-package` into a scratch configuration, and `--validate` with the package enabled, with `main` and with the release. The release may refuse a package whose `minimumVersion` is above it.
-- **Publish:** on `main` only, after both. `scripts/build-index.sh` writes `index.json`, with the suggestions from `suggestions.json`, and a `<id>-<version>.tar.gz` archive for each new version, and uploads them to the `store` prerelease. A version already in the index keeps its archive and checksum. A version whose archive is already on the release but not in the index, because a publish failed halfway, is listed with that archive when it holds the same files; a publish that fails can be re-run. StableBar reads the index at `https://github.com/Seb-GRAF/stablebar-packages/releases/download/store/index.json`.
+- **Publish:** on `main` only, after both. `scripts/build-index.sh` writes `index.json`, with the suggestions from `suggestions.json` and each package's category and symbol from `listing.json`, and a `<id>-<version>.tar.gz` archive for each new version, and uploads them to the `store` prerelease. A version already in the index keeps its archive and checksum. A version whose archive is already on the release but not in the index, because a publish failed halfway, is listed with that archive when it holds the same files; a publish that fails can be re-run. StableBar reads the index at `https://github.com/Seb-GRAF/stablebar-packages/releases/download/store/index.json`.
 
 ## Agent skills
 

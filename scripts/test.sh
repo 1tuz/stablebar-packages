@@ -1,5 +1,5 @@
 #!/bin/bash
-# Tests check-versions.sh, build-index.sh, check-one-package.sh, check-suggestions.sh and
+# Tests check-versions.sh, build-index.sh, check-one-package.sh, check-suggestions.sh, check-listing.sh and
 # check-package.sh on scratch repositories and packages, which it deletes afterwards.
 set -euo pipefail
 unset STABLEBAR STABLEBAR_RELEASE
@@ -134,15 +134,22 @@ copies_the_suggestions() {
   index && jq -e '.suggestions == [{"when": {"tools": ["curl"]}, "packages": ["weather"]}]' dist/index.json > /dev/null
 }
 
+# The previous index's entry has an older category, which the listing replaces.
+lists_the_category_and_symbol() {
+  index previous/index.json && [[ $(entry weather category) == utilities && $(entry weather symbol) == cloud.sun ]]
+}
+
 repository
 package weather 1.0.0 first
 echo '[{"when": {"tools": ["curl"]}, "packages": ["weather"]}]' > suggestions.json
+echo '{"weather": {"category": "utilities", "symbol": "cloud.sun"}}' > listing.json
 mkdir previous published
-echo '{"packages": [{"id": "weather", "version": "1.0.0", "archive": "weather-1.0.0.tar.gz", "sha256": "kept"}]}' > previous/index.json
+echo '{"packages": [{"id": "weather", "version": "1.0.0", "archive": "weather-1.0.0.tar.gz", "sha256": "kept", "category": "system"}]}' > previous/index.json
 
 check pass "index: a version in the previous index keeps its entry" keeps_the_indexed_entry
 check pass "index: a new version gets an archive" archives_a_new_version
 check pass "index: it lists the setup suggestions" copies_the_suggestions
+check pass "index: it gives each package its category and symbol" lists_the_category_and_symbol
 
 # A publish that uploaded the archive but failed to replace the index, or an index that was lost.
 # Building the archive again gives other bytes, so the files are compared, not the archives.
@@ -221,6 +228,24 @@ suggestions "fail:clock is a theme" "a theme" '[{"when": {"tools": ["date"]}, "p
 
 suggested clock '{"settings": {"zone": {"type": "string"}}}'
 suggestions "fail:the setting zone has no default" "a setting without a default" '[{"when": {"tools": ["date"]}, "packages": ["clock"]}]'
+
+# check-listing.sh: every widget package has a known category and a symbol, and no theme or unknown package is listed.
+listing() {
+  local expected=$1 name=$2
+  printf '%s\n' "$3" > listing.json
+  check "$expected" "listing: $name" "$scripts/check-listing.sh"
+}
+
+repository
+suggested weather
+suggested fern '{"kind": "theme"}'
+listing pass "a widget package with a category and a symbol" '{"weather": {"category": "utilities", "symbol": "cloud.sun"}}'
+listing "fail:weather needs a category and a symbol" "a widget package left out" '{}'
+listing "fail:must be one of" "an unknown category" '{"weather": {"category": "weather", "symbol": "cloud.sun"}}'
+listing "fail:must name an SF Symbol" "a symbol that isn't one" '{"weather": {"category": "utilities", "symbol": "Cloud Sun"}}'
+listing 'fail:weather has an unknown key "icon"' "an unknown key" '{"weather": {"category": "utilities", "symbol": "cloud.sun", "icon": "x"}}'
+listing "fail:fern is a theme" "a theme" '{"weather": {"category": "utilities", "symbol": "cloud.sun"}, "fern": {"category": "utilities", "symbol": "leaf"}}'
+listing "fail:radio isn't a package in packages/" "a package that doesn't exist" '{"weather": {"category": "utilities", "symbol": "cloud.sun"}, "radio": {"category": "utilities", "symbol": "radio"}}'
 
 # check-package.sh: the file rules, then StableBar's checks with the binaries in STABLEBAR and
 # STABLEBAR_RELEASE, here stand-ins that print a message and fail when given one.
