@@ -93,7 +93,7 @@ To try the package on your own bar, install it from its folder in **Settings →
 
 ## How we work
 
-1. **One package per pull request.** Changes to CI, scripts or these guides get their own. CI fails a pull request that changes several packages, or a package and anything besides README.md.
+1. **One package per pull request.** Changes to CI, scripts or these guides get their own. CI fails a pull request that changes several packages, or a package and anything besides README.md and listing.json.
 2. **Branch and open a pull request.** Nobody pushes to `main`, since every push to `main` publishes. Fill in the template: what the package does, what changed, the access it needs and how you tested it. Upload screenshots of the widget and its popup to the pull request.
 3. **Title it in [Conventional Commits](https://www.conventionalcommits.org) and plain words,** such as `feat: add a Weather package` or `fix: keep Weather working without a location`. Link the issue it closes, if there is one.
 4. **Wait for CI.** `Lint` and `Validate` must pass.

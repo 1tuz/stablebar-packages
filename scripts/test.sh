@@ -166,7 +166,8 @@ package weather 1.0.0 changed
 check "fail:weather-1.0.0.tar.gz is already on the store release with other files" \
   "index: an archive already published holds other files" index "" published
 
-# check-one-package.sh: a pull request changes one package, and README.md's package list with it.
+# check-one-package.sh: a pull request changes one package, and README.md's package list and
+# listing.json with it.
 repository
 package weather 1.0.0 first
 package clock 1.0.0 tick
@@ -176,6 +177,10 @@ commit "add weather and clock"
 package weather 1.0.1 second
 echo "# Store, with weather 1.0.1" > README.md
 pull_request check-one-package.sh pass "a package and the package list"
+
+package weather 1.0.1 second
+echo '{ "weather": { "category": "utilities", "symbol": "cloud.sun" } }' > listing.json
+pull_request check-one-package.sh pass "a package and its listing"
 
 package weather 1.0.1 second
 package clock 1.0.1 tock
