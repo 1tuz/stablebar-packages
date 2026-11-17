@@ -7,6 +7,5 @@
   "repository": "https://github.com/Seb-GRAF/stablebar-packages",
   "entry": "config.json",
   "screenshot": "preview.png",
-  "requires": ["tailscale"],
   "settings": {}
 }
