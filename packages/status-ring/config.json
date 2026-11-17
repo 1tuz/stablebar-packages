@@ -63,22 +63,23 @@
             "children": [
               {
                 "type": "column",
-                "style": { "spacing": 1.5 },
+                "style": { "spacing": 2 },
                 "children": [
                   {
                     "type": "symbol",
                     "source": "ringNetwork.connectionIcon",
-                    "style": { "iconSize": "@setting.symbolSize", "fontWeight": "bold" }
+                    "alignment": "center",
+                    "style": { "width": 9, "iconSize": "@setting.symbolSize", "fontWeight": "bold" }
                   },
                   {
                     "type": "progress",
                     "source": "ringAudio.volume",
                     "hideWhenEmpty": "ringAudio.volume",
-                    "height": 1.6,
+                    "height": 1.8,
                     "segments": "@setting.volumeDots",
                     "style": {
                       "width": 9,
-                      "spacing": 1,
+                      "spacing": 0.7,
                       "cornerRadius": 1,
                       "accent": "@setting.color",
                       "background": "@token.track",
@@ -96,7 +97,7 @@
                 "type": "symbol",
                 "name": "circle.fill",
                 "hideWhenEmpty": "ringSystem.strainIcon",
-                "style": { "iconSize": 4, "foreground": "@token.warning", "offsetX": 7, "offsetY": -6.5 }
+                "style": { "iconSize": 4, "foreground": "@token.warning", "offsetX": 7, "offsetY": -7 }
               }
             ]
           },
